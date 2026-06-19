@@ -1,0 +1,23 @@
+# Dart/Flutter
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec_lock.lock
+
+# Native build artifacts
+android/.cxx/
+android/.gradle/
+**/.cxx/
+
+# llama.cpp large test fixtures (not needed to build the library;
+# src/CMakeLists.txt globs src/models/*.cpp, not these .gguf vocab files)
+llama.cpp/models/*.gguf
+llama.cpp/models/*.gguf.inp
+llama.cpp/models/*.gguf.out
+
+# IDE / OS
+.idea/
+.DS_Store
+*.iml
