@@ -43,6 +43,6 @@ Supports GPU acceleration via Metal and CPU optimization via Accelerate framewor
   s.frameworks = 'Metal', 'MetalKit', 'MetalPerformanceShaders', 'Accelerate'
   
   s.dependency 'Flutter'
-  s.platform = :ios, '13.0'
+  s.platform = :ios, '14.0'
   s.swift_version = '5.0'
 end

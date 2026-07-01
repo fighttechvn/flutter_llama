@@ -1,3 +1,18 @@
+## 1.1.3 — iOS 15 launch-crash fix
+
+- Rebuilt `ios/llama.xcframework` (device + simulator slices) with `GGML_BLAS=OFF`
+  and a minimum deployment target of iOS 14.0 (was 16.4). The previous build
+  linked Apple Accelerate's new-LAPACK ILP64 BLAS symbol
+  `cblas_sgemm$NEWLAPACK$ILP64`, which only exists on iOS 16.4+. On iOS 15 and
+  earlier, dyld could not resolve it and the host app crashed at launch
+  (EXC_CRASH / SIGABRT, "Symbol missing"). Metal GPU acceleration is unchanged;
+  CPU matmul now uses ggml's built-in kernels + vDSP instead of Accelerate BLAS.
+- Added a runtime capability guard in `FlutterLlamaPlugin.loadModel` that returns
+  `UNSUPPORTED_OS` on iOS < 14 so callers degrade gracefully.
+- Bumped the iOS podspec platform to 14.0 to match the framework floor.
+- Note: macOS / tvOS / visionOS slices were left as-is (not consumed by the iOS
+  app that needed this fix); rebuild them the same way if those platforms ship.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.

@@ -73,6 +73,20 @@ public class FlutterLlamaPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
     private func loadModel(call: FlutterMethodCall, result: @escaping FlutterResult) {
         queue.async { [weak self] in
             guard let self = self else { return }
+            // Runtime capability guard: the bundled llama.framework targets a minimum
+            // of iOS 14. Older systems can't load it, so report a clean UNSUPPORTED_OS
+            // error and let callers degrade gracefully instead of assuming the
+            // on-device engine is available on every device.
+            guard #available(iOS 14.0, *) else {
+                DispatchQueue.main.async {
+                    result(FlutterError(
+                        code: "UNSUPPORTED_OS",
+                        message: "On-device llama requires iOS 14 or later.",
+                        details: nil
+                    ))
+                }
+                return
+            }
             guard let args = call.arguments as? [String: Any],
                   let modelPath = args["modelPath"] as? String else {
                 DispatchQueue.main.async {
