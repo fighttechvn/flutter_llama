@@ -123,6 +123,12 @@ bool llama_generate(
         return false;
     }
     
+
+    // Reset the KV cache so each call is an independent one-shot generation.
+    // Without this the context accumulates across generate() calls and later
+    // prompts fail with "failed to find a memory slot for batch".
+    llama_memory_clear(llama_get_memory(g_context), true);
+
     NSLog(@"[llama_cpp_bridge] Generating with prompt: %.50s...", prompt);
     
     std::string prompt_text(prompt);
@@ -228,6 +234,9 @@ void llama_generate_stream_init(
     g_should_stop = false;
     g_stream_tokens.clear();
     g_stream_pos = 0;
+
+    // Fresh KV cache per stream — see llama_generate for rationale.
+    llama_memory_clear(llama_get_memory(g_context), true);
     
     std::string prompt_text(prompt);
     
